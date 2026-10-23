@@ -1,0 +1,177 @@
+/* Estilos propios sobre Bootstrap 5 */
+
+:root {
+	--fondo: #f4f6fb;
+	--barra-inicio: #1e3a8a;
+	--barra-fin: #2563eb;
+	--sombra: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .10);
+	--sombra-hover: 0 8px 24px rgba(16, 24, 40, .12);
+}
+
+[data-bs-theme="dark"] {
+	--fondo: #0f1420;
+	--barra-inicio: #111a33;
+	--barra-fin: #1e3a8a;
+	--sombra: 0 1px 2px rgba(0, 0, 0, .4);
+	--sombra-hover: 0 8px 24px rgba(0, 0, 0, .5);
+}
+
+body {
+	background: var(--fondo);
+	min-height: 100vh;
+}
+
+.barra {
+	background: linear-gradient(90deg, var(--barra-inicio), var(--barra-fin));
+}
+
+.card {
+	border: 1px solid var(--bs-border-color-translucent);
+	box-shadow: var(--sombra);
+	border-radius: .9rem;
+}
+
+/* Indicadores */
+.indicador-icono {
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: .7rem;
+	display: grid;
+	place-items: center;
+	font-size: 1.2rem;
+	margin-bottom: .75rem;
+}
+
+.indicador-valor {
+	/* Se encoge en pantallas angostas para que el total en pesos no se parta en dos líneas */
+	font-size: clamp(1.1rem, 4.6vw, 1.6rem);
+	font-weight: 700;
+	line-height: 1.1;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.indicador-etiqueta {
+	color: var(--bs-secondary-color);
+	font-size: .875rem;
+}
+
+/* Filtros */
+.buscador {
+	max-width: 260px;
+}
+
+.filtro {
+	width: auto;
+}
+
+@media (max-width: 575.98px) {
+	.buscador,
+	.filtro {
+		max-width: none;
+		width: 100%;
+	}
+
+	.accion-principal {
+		margin-left: 0 !important;
+		width: 100%;
+	}
+}
+
+/* Tarjetas de habitación */
+.habitacion {
+	transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.habitacion:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--sombra-hover);
+}
+
+.habitacion .franja {
+	height: 5px;
+	border-radius: .9rem .9rem 0 0;
+}
+
+.habitacion.no-disponible .franja {
+	background: var(--bs-danger) !important;
+}
+
+.habitacion-numero {
+	font-size: 1.35rem;
+	font-weight: 700;
+}
+
+.habitacion-precio {
+	font-size: 1.15rem;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.tipo-SENCILLA { background: #0ea5e9; }
+.tipo-DOBLE { background: #6366f1; }
+.tipo-SUITE { background: #d97706; }
+
+.badge.tipo-SENCILLA,
+.badge.tipo-DOBLE,
+.badge.tipo-SUITE {
+	color: #fff;
+}
+
+/* Tabla de reservas */
+.table > :not(caption) > * > * {
+	padding: .8rem 1rem;
+}
+
+.table thead th {
+	font-size: .8rem;
+	text-transform: uppercase;
+	letter-spacing: .03em;
+	color: var(--bs-secondary-color);
+	font-weight: 600;
+}
+
+.table td.num {
+	font-variant-numeric: tabular-nums;
+	text-align: end;
+	white-space: nowrap;
+}
+
+/* Estados vacíos */
+.vacio {
+	text-align: center;
+	padding: 3rem 1rem;
+	color: var(--bs-secondary-color);
+}
+
+.vacio i {
+	font-size: 2.5rem;
+	display: block;
+	margin-bottom: .5rem;
+}
+
+/* Resumen dentro del modal de reserva */
+.resumen-reserva {
+	background: var(--bs-tertiary-bg);
+	border-radius: .6rem;
+	padding: .75rem 1rem;
+	font-size: .925rem;
+	color: var(--bs-secondary-color);
+}
+
+.resumen-reserva strong {
+	color: var(--bs-body-color);
+}
+
+/* Modal de confirmación */
+.confirmar-icono {
+	width: 3rem;
+	height: 3rem;
+	margin: 0 auto .75rem;
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+	font-size: 1.3rem;
+	background: var(--bs-danger-bg-subtle);
+	color: var(--bs-danger);
+}

@@ -4,6 +4,9 @@ API REST para gestionar las **habitaciones** de un hotel y sus **reservas**, hec
 
 **Demo en Render:** https://parcial-hotel.onrender.com
 
+- Interfaz web: https://parcial-hotel.onrender.com
+- Documentación interactiva (Swagger): https://parcial-hotel.onrender.com/swagger-ui.html
+- Bienvenida de la API: https://parcial-hotel.onrender.com/api
 - Habitaciones: https://parcial-hotel.onrender.com/api/habitaciones
 - Reservas: https://parcial-hotel.onrender.com/api/reservas
 - Reservas de una habitación: https://parcial-hotel.onrender.com/api/habitaciones/1/reservas
@@ -17,6 +20,8 @@ API REST para gestionar las **habitaciones** de un hotel y sus **reservas**, hec
 - Java 21
 - Spring Boot 3.5 (Web, Data JPA, Validation)
 - H2 (base de datos en memoria)
+- springdoc-openapi (Swagger UI)
+- Bootstrap 5 + JavaScript (interfaz web)
 - Maven Wrapper
 - Docker (despliegue en Render)
 
@@ -24,15 +29,33 @@ API REST para gestionar las **habitaciones** de un hotel y sus **reservas**, hec
 
 ```
 src/main/java/com/example/hotel
+├── config       → Configuración de OpenAPI / Swagger
 ├── controller   → Endpoints REST (HabitacionController, ReservaController, InicioController)
 ├── service      → Lógica de negocio y reglas de validación
 ├── repository   → Acceso a datos con Spring Data JPA
 ├── entity       → Entidades JPA (Habitacion, Reserva, TipoHabitacion)
 ├── dto          → Objetos de entrada/salida (Request, Response, ErrorResponse)
 └── exception    → Excepciones propias y GlobalExceptionHandler (@RestControllerAdvice)
+
+src/main/resources/static   → Interfaz web (index.html, css/estilos.css, js/app.js)
 ```
 
 Los controladores nunca exponen las entidades: reciben un `*Request` validado con Jakarta Validation y devuelven un `*Response`.
+
+## Interfaz web
+
+En la raíz (`/`) hay un panel para usar la API sin herramientas externas, hecho con Bootstrap 5 y JavaScript (`fetch`). Spring Boot lo sirve desde `src/main/resources/static`, así que se despliega junto con la API y no necesita Node ni configurar CORS.
+
+- Indicadores: total de habitaciones, disponibles, reservas y valor total reservado.
+- Habitaciones en tarjetas, con filtros por número, tipo y disponibilidad.
+- Tabla de reservas con búsqueda por cliente y filtro por habitación.
+- Formularios para crear y editar; el de reservas calcula noches y total mientras se llenan las fechas.
+- Los errores de la API se muestran en la interfaz: los de validación (`400`) bajo cada campo y los conflictos (`409`) como notificación.
+- Confirmación antes de eliminar, tema claro/oscuro y diseño adaptable a celular.
+
+## Documentación interactiva (Swagger)
+
+En `/swagger-ui.html` está la documentación generada con springdoc-openapi a partir de los controladores. Cada endpoint tiene su descripción, los códigos de respuesta posibles y un botón **Try it out** con datos de ejemplo para probarlo desde el navegador. La especificación OpenAPI en JSON está en `/v3/api-docs`.
 
 ## Modelo de entidades
 
@@ -74,7 +97,7 @@ Al eliminar una habitación se eliminan también sus reservas (`cascade = ALL, o
 
 Base: `http://localhost:8080` (o la URL de Render).
 
-`GET /` muestra un mensaje de bienvenida con la lista de endpoints disponibles.
+`GET /api` devuelve un mensaje de bienvenida con la lista de endpoints y enlaces a la interfaz web y a Swagger.
 
 ### Habitaciones
 
@@ -206,7 +229,9 @@ Requisito: Java 21.
 ./mvnw spring-boot:run
 ```
 
-La API queda en `http://localhost:8080/api/habitaciones`.
+- Interfaz web: `http://localhost:8080`
+- Swagger: `http://localhost:8080/swagger-ui.html`
+- API: `http://localhost:8080/api/habitaciones`
 
 Consola de H2 (solo en local): `http://localhost:8080/h2-console`
 

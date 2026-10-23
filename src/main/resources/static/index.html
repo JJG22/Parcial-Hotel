@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="es" data-bs-theme="light">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Hotel · Panel de gestión</title>
+	<meta name="description" content="Interfaz web para gestionar habitaciones y reservas de la API REST Hotel">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%230d6efd'/><path d='M4 12V4h1.6v3.2h4.8V4H12v8h-1.6V8.6H5.6V12z' fill='white'/></svg>">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+		integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+		integrity="sha384-CK2SzKma4jA5H/MXDUU7i1TqZlCFaD4T01vtyDFvPlD97JQyS+IsSh1nI2EFbpyk" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+	<!-- Barra de navegación -->
+	<nav class="navbar navbar-expand-md navbar-dark barra">
+		<div class="container">
+			<a class="navbar-brand fw-semibold" href="/"><i class="bi bi-building me-2"></i>Hotel</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
+				aria-controls="menu" aria-expanded="false" aria-label="Abrir menú">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="menu">
+				<ul class="navbar-nav ms-auto align-items-md-center gap-md-1">
+					<li class="nav-item"><a class="nav-link" href="/swagger-ui.html" target="_blank" rel="noopener"><i class="bi bi-braces me-1"></i>Swagger</a></li>
+					<li class="nav-item"><a class="nav-link" href="/api" target="_blank" rel="noopener"><i class="bi bi-code-slash me-1"></i>API</a></li>
+					<li class="nav-item"><a class="nav-link" href="https://github.com/JJG22/Parcial-Hotel" target="_blank" rel="noopener"><i class="bi bi-github me-1"></i>GitHub</a></li>
+					<li class="nav-item">
+						<button class="btn btn-link nav-link" id="btnTema" type="button" title="Cambiar tema" aria-label="Cambiar tema claro u oscuro">
+							<i class="bi bi-moon-stars"></i>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<main class="container py-4">
+
+		<header class="mb-4">
+			<h1 class="h3 mb-1">Panel de gestión</h1>
+			<p class="text-body-secondary mb-0">Administra las habitaciones y reservas del hotel. Todos los cambios se guardan en la API.</p>
+		</header>
+
+		<!-- Indicadores -->
+		<section class="row g-3 mb-4" aria-label="Resumen">
+			<div class="col-6 col-lg-3">
+				<div class="card indicador h-100">
+					<div class="card-body">
+						<div class="indicador-icono bg-primary-subtle text-primary"><i class="bi bi-door-closed"></i></div>
+						<div class="indicador-valor" id="kpiHabitaciones">–</div>
+						<div class="indicador-etiqueta">Habitaciones</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-lg-3">
+				<div class="card indicador h-100">
+					<div class="card-body">
+						<div class="indicador-icono bg-success-subtle text-success"><i class="bi bi-check2-circle"></i></div>
+						<div class="indicador-valor" id="kpiDisponibles">–</div>
+						<div class="indicador-etiqueta">Disponibles</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-lg-3">
+				<div class="card indicador h-100">
+					<div class="card-body">
+						<div class="indicador-icono bg-warning-subtle text-warning-emphasis"><i class="bi bi-calendar-check"></i></div>
+						<div class="indicador-valor" id="kpiReservas">–</div>
+						<div class="indicador-etiqueta">Reservas</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-lg-3">
+				<div class="card indicador h-100">
+					<div class="card-body">
+						<div class="indicador-icono bg-info-subtle text-info-emphasis"><i class="bi bi-cash-stack"></i></div>
+						<div class="indicador-valor" id="kpiIngresos">–</div>
+						<div class="indicador-etiqueta">Total reservado</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Pestañas -->
+		<ul class="nav nav-pills mb-3" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="tabHabitaciones" data-bs-toggle="pill" data-bs-target="#panelHabitaciones"
+					type="button" role="tab" aria-controls="panelHabitaciones" aria-selected="true">
+					<i class="bi bi-door-open me-1"></i>Habitaciones
+				</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="tabReservas" data-bs-toggle="pill" data-bs-target="#panelReservas"
+					type="button" role="tab" aria-controls="panelReservas" aria-selected="false">
+					<i class="bi bi-calendar3 me-1"></i>Reservas
+				</button>
+			</li>
+		</ul>
+
+		<!-- Estado de carga / error de conexión -->
+		<div id="estadoCarga" class="text-center py-5">
+			<div class="spinner-border text-primary mb-3" role="status" aria-hidden="true"></div>
+			<p class="mb-1 fw-medium">Conectando con el servidor…</p>
+			<p class="small text-body-secondary mb-0" id="avisoDespertar" hidden>
+				En el plan gratuito de Render el servidor se duerme; la primera carga puede tardar hasta un minuto.
+			</p>
+		</div>
+		<!-- El d-flex va en un div interno: en el mismo elemento anularía el atributo hidden -->
+		<div id="errorCarga" class="alert alert-danger" role="alert" hidden>
+			<div class="d-flex align-items-center gap-3">
+				<i class="bi bi-wifi-off fs-4"></i>
+				<div class="flex-grow-1">No se pudo conectar con la API. <span id="errorCargaDetalle" class="small"></span></div>
+				<button class="btn btn-sm btn-outline-danger" id="btnReintentar" type="button">Reintentar</button>
+			</div>
+		</div>
+
+		<div class="tab-content" id="contenido" hidden>
+
+			<!-- Panel de habitaciones -->
+			<section class="tab-pane fade show active" id="panelHabitaciones" role="tabpanel" aria-labelledby="tabHabitaciones">
+				<div class="d-flex flex-wrap gap-2 mb-3">
+					<div class="input-group buscador">
+						<span class="input-group-text"><i class="bi bi-search"></i></span>
+						<input type="search" class="form-control" id="filtroNumero" placeholder="Buscar por número" aria-label="Buscar por número">
+					</div>
+					<select class="form-select filtro" id="filtroTipo" aria-label="Filtrar por tipo">
+						<option value="">Todos los tipos</option>
+						<option value="SENCILLA">Sencilla</option>
+						<option value="DOBLE">Doble</option>
+						<option value="SUITE">Suite</option>
+					</select>
+					<select class="form-select filtro" id="filtroDisponible" aria-label="Filtrar por disponibilidad">
+						<option value="">Todas</option>
+						<option value="true">Disponibles</option>
+						<option value="false">No disponibles</option>
+					</select>
+					<button class="btn btn-primary ms-auto accion-principal" id="btnNuevaHabitacion" type="button">
+						<i class="bi bi-plus-lg me-1"></i>Nueva habitación
+					</button>
+				</div>
+				<div class="row g-3" id="gridHabitaciones"></div>
+				<div class="vacio" id="vacioHabitaciones" hidden>
+					<i class="bi bi-door-closed"></i>
+					<p>No hay habitaciones que coincidan con los filtros.</p>
+				</div>
+			</section>
+
+			<!-- Panel de reservas -->
+			<section class="tab-pane fade" id="panelReservas" role="tabpanel" aria-labelledby="tabReservas">
+				<div class="d-flex flex-wrap gap-2 mb-3">
+					<div class="input-group buscador">
+						<span class="input-group-text"><i class="bi bi-search"></i></span>
+						<input type="search" class="form-control" id="filtroCliente" placeholder="Buscar por cliente" aria-label="Buscar por cliente">
+					</div>
+					<select class="form-select filtro" id="filtroHabitacion" aria-label="Filtrar por habitación">
+						<option value="">Todas las habitaciones</option>
+					</select>
+					<button class="btn btn-primary ms-auto accion-principal" id="btnNuevaReserva" type="button">
+						<i class="bi bi-plus-lg me-1"></i>Nueva reserva
+					</button>
+				</div>
+				<div class="card">
+					<div class="table-responsive">
+						<table class="table table-hover align-middle mb-0">
+							<thead>
+								<tr>
+									<th scope="col">Cliente</th>
+									<th scope="col">Habitación</th>
+									<th scope="col">Entrada</th>
+									<th scope="col">Salida</th>
+									<th scope="col" class="text-end">Noches</th>
+									<th scope="col" class="text-end">Total</th>
+									<th scope="col" class="text-end"><span class="visually-hidden">Acciones</span></th>
+								</tr>
+							</thead>
+							<tbody id="tablaReservas"></tbody>
+						</table>
+					</div>
+				</div>
+				<div class="vacio" id="vacioReservas" hidden>
+					<i class="bi bi-calendar-x"></i>
+					<p>No hay reservas que coincidan con los filtros.</p>
+				</div>
+			</section>
+		</div>
+	</main>
+
+	<footer class="container pb-4 small text-body-secondary">
+		API REST Hotel · Spring Boot 3 + Java 21 · <a href="/swagger-ui.html" target="_blank" rel="noopener">Documentación</a>
+	</footer>
+
+	<!-- Modal: habitación -->
+	<div class="modal fade" id="modalHabitacion" tabindex="-1" aria-labelledby="tituloModalHabitacion" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<form class="modal-content" id="formHabitacion" novalidate>
+				<div class="modal-header">
+					<h2 class="modal-title fs-5" id="tituloModalHabitacion">Nueva habitación</h2>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+				<div class="modal-body">
+					<input type="hidden" id="habId">
+					<div class="row g-3">
+						<div class="col-sm-6">
+							<label for="habNumero" class="form-label">Número</label>
+							<input type="text" class="form-control" id="habNumero" name="numero" maxlength="10" required placeholder="Ej. 401">
+							<div class="invalid-feedback"></div>
+						</div>
+						<div class="col-sm-6">
+							<label for="habTipo" class="form-label">Tipo</label>
+							<select class="form-select" id="habTipo" name="tipo" required>
+								<option value="SENCILLA">Sencilla</option>
+								<option value="DOBLE">Doble</option>
+								<option value="SUITE">Suite</option>
+							</select>
+							<div class="invalid-feedback"></div>
+						</div>
+						<div class="col-12">
+							<label for="habPrecio" class="form-label">Precio por noche (COP)</label>
+							<div class="input-group has-validation">
+								<span class="input-group-text">$</span>
+								<input type="number" class="form-control" id="habPrecio" name="precioPorNoche" min="1" step="0.01" required placeholder="Ej. 180000">
+								<div class="invalid-feedback"></div>
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="form-check form-switch">
+								<input class="form-check-input" type="checkbox" role="switch" id="habDisponible" name="disponible" checked>
+								<label class="form-check-label" for="habDisponible">Disponible para reservar</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-primary">
+						<span class="spinner-border spinner-border-sm me-1" aria-hidden="true" hidden></span>Guardar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Modal: reserva -->
+	<div class="modal fade" id="modalReserva" tabindex="-1" aria-labelledby="tituloModalReserva" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<form class="modal-content" id="formReserva" novalidate>
+				<div class="modal-header">
+					<h2 class="modal-title fs-5" id="tituloModalReserva">Nueva reserva</h2>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+				<div class="modal-body">
+					<input type="hidden" id="resId">
+					<div class="row g-3">
+						<div class="col-12">
+							<label for="resCliente" class="form-label">Nombre del cliente</label>
+							<input type="text" class="form-control" id="resCliente" name="nombreCliente" maxlength="100" required placeholder="Ej. Ana Torres">
+							<div class="invalid-feedback"></div>
+						</div>
+						<div class="col-12">
+							<label for="resHabitacion" class="form-label">Habitación</label>
+							<select class="form-select" id="resHabitacion" name="habitacionId" required></select>
+							<div class="invalid-feedback"></div>
+						</div>
+						<div class="col-sm-6">
+							<label for="resEntrada" class="form-label">Fecha de entrada</label>
+							<input type="date" class="form-control" id="resEntrada" name="fechaEntrada" required>
+							<div class="invalid-feedback"></div>
+						</div>
+						<div class="col-sm-6">
+							<label for="resSalida" class="form-label">Fecha de salida</label>
+							<input type="date" class="form-control" id="resSalida" name="fechaSalida" required>
+							<div class="invalid-feedback"></div>
+						</div>
+						<div class="col-12">
+							<div class="resumen-reserva" id="resumenReserva">Elige la habitación y las fechas para ver el total.</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-primary">
+						<span class="spinner-border spinner-border-sm me-1" aria-hidden="true" hidden></span>Guardar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Modal: confirmar eliminación -->
+	<div class="modal fade" id="modalConfirmar" tabindex="-1" aria-labelledby="tituloConfirmar" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-sm">
+			<div class="modal-content">
+				<div class="modal-body text-center p-4">
+					<div class="confirmar-icono"><i class="bi bi-trash3"></i></div>
+					<h2 class="fs-5 mb-2" id="tituloConfirmar">¿Eliminar?</h2>
+					<p class="text-body-secondary small mb-0" id="textoConfirmar"></p>
+				</div>
+				<div class="modal-footer flex-nowrap p-0">
+					<button type="button" class="btn btn-link text-body-secondary w-50 m-0 py-3 text-decoration-none border-end rounded-0" data-bs-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-link text-danger w-50 m-0 py-3 fw-semibold text-decoration-none rounded-0" id="btnConfirmar">Eliminar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Notificaciones -->
+	<div class="toast-container position-fixed top-0 end-0 p-3" id="contenedorToasts" aria-live="polite" aria-atomic="true"></div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+	<script src="js/app.js"></script>
+</body>
+</html>
