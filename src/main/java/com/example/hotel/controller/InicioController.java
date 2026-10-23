@@ -6,11 +6,16 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Página de bienvenida en la raíz con la lista de endpoints disponibles. */
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+/** Bienvenida de la API con la lista de endpoints disponibles. La raíz "/" muestra la interfaz web. */
 @RestController
+@Tag(name = "Inicio")
 public class InicioController {
 
-	@GetMapping("/")
+	@GetMapping("/api")
+	@Operation(summary = "Bienvenida y lista de endpoints")
 	public Map<String, Object> inicio() {
 		Map<String, String> habitaciones = new LinkedHashMap<>();
 		habitaciones.put("GET /api/habitaciones", "Lista todas las habitaciones");
@@ -31,9 +36,15 @@ public class InicioController {
 		endpoints.put("habitaciones", habitaciones);
 		endpoints.put("reservas", reservas);
 
+		Map<String, String> enlaces = new LinkedHashMap<>();
+		enlaces.put("interfazWeb", "/");
+		enlaces.put("swagger", "/swagger-ui.html");
+		enlaces.put("openApi", "/v3/api-docs");
+
 		Map<String, Object> respuesta = new LinkedHashMap<>();
 		respuesta.put("mensaje", "Bienvenido a la API REST del Hotel");
 		respuesta.put("estado", "API funcionando");
+		respuesta.put("enlaces", enlaces);
 		respuesta.put("endpoints", endpoints);
 		return respuesta;
 	}
