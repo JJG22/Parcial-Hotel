@@ -8,6 +8,8 @@ API REST para gestionar las **habitaciones** de un hotel y sus **reservas**, hec
 - Reservas: https://parcial-hotel.onrender.com/api/reservas
 - Reservas de una habitación: https://parcial-hotel.onrender.com/api/habitaciones/1/reservas
 
+**Pruebas desde el despliegue:** [pruebas/PRUEBAS-DESPLIEGUE.md](pruebas/PRUEBAS-DESPLIEGUE.md) (25 de 25 exitosas) · Colección de Postman: [pruebas/Hotel-API.postman_collection.json](pruebas/Hotel-API.postman_collection.json)
+
 > En el plan gratuito de Render el servicio se duerme tras unos 15 minutos sin uso; la primera petición puede tardar ~50 s.
 
 ## Tecnologías
@@ -231,6 +233,15 @@ Para usar otro puerto, pasa la variable `PORT`:
 ```bash
 docker run -e PORT=9090 -p 9090:9090 hotel-api
 ```
+
+## Pruebas desde el despliegue
+
+En la carpeta [`pruebas/`](pruebas/) están:
+
+- **[PRUEBAS-DESPLIEGUE.md](pruebas/PRUEBAS-DESPLIEGUE.md):** informe de 25 pruebas ejecutadas contra la API en Render (CRUD completo, validaciones y errores 400/404/409), con cada petición, el código esperado y obtenido, y la respuesta.
+- **[Hotel-API.postman_collection.json](pruebas/Hotel-API.postman_collection.json):** los mismos casos como colección de Postman, con validaciones automáticas.
+
+Para ejecutar la colección: en Postman, **Import** → selecciona el archivo → clic derecho en la colección → **Run collection**. Las peticiones deben ir en orden, porque las primeras guardan los ids de la habitación y la reserva que crean y las siguientes los usan. Para probar en local, cambia la variable `baseUrl` de la colección a `http://localhost:8080`.
 
 ## Despliegue en Render
 
