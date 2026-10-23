@@ -22,7 +22,7 @@ API REST para gestionar las **habitaciones** de un hotel y sus **reservas**, hec
 
 ```
 src/main/java/com/example/hotel
-├── controller   → Endpoints REST (HabitacionController, ReservaController)
+├── controller   → Endpoints REST (HabitacionController, ReservaController, InicioController)
 ├── service      → Lógica de negocio y reglas de validación
 ├── repository   → Acceso a datos con Spring Data JPA
 ├── entity       → Entidades JPA (Habitacion, Reserva, TipoHabitacion)
@@ -71,6 +71,8 @@ Al eliminar una habitación se eliminan también sus reservas (`cascade = ALL, o
 ## Endpoints
 
 Base: `http://localhost:8080` (o la URL de Render).
+
+`GET /` muestra un mensaje de bienvenida con la lista de endpoints disponibles.
 
 ### Habitaciones
 
