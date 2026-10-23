@@ -3,7 +3,6 @@
 API REST para gestionar las **habitaciones** de un hotel y sus **reservas**, hecha con Spring Boot 3 y Java 21.
 
 **Demo en Render:** https://parcial-hotel.onrender.com
-**Versión gratuita** Tiempo de espera al rededor de 1 o 2 minutos para despegar el servidor
 
 - Habitaciones: https://parcial-hotel.onrender.com/api/habitaciones
 - Reservas: https://parcial-hotel.onrender.com/api/reservas
