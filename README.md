@@ -1,0 +1,235 @@
+# API REST Hotel
+
+API REST para gestionar las **habitaciones** de un hotel y sus **reservas**, hecha con Spring Boot 3 y Java 21.
+
+**Demo en Render:** _pendiente — pega aquí el enlace, por ejemplo `https://hotel-xxxx.onrender.com/api/habitaciones`_
+
+> En el plan gratuito de Render el servicio se duerme tras unos 15 minutos sin uso; la primera petición puede tardar ~50 s.
+
+## Tecnologías
+
+- Java 21
+- Spring Boot 3.5 (Web, Data JPA, Validation)
+- H2 (base de datos en memoria)
+- Maven Wrapper
+- Docker (despliegue en Render)
+
+## Arquitectura en capas
+
+```
+src/main/java/com/example/hotel
+├── controller   → Endpoints REST (HabitacionController, ReservaController)
+├── service      → Lógica de negocio y reglas de validación
+├── repository   → Acceso a datos con Spring Data JPA
+├── entity       → Entidades JPA (Habitacion, Reserva, TipoHabitacion)
+├── dto          → Objetos de entrada/salida (Request, Response, ErrorResponse)
+└── exception    → Excepciones propias y GlobalExceptionHandler (@RestControllerAdvice)
+```
+
+Los controladores nunca exponen las entidades: reciben un `*Request` validado con Jakarta Validation y devuelven un `*Response`.
+
+## Modelo de entidades
+
+Relación **1 Habitación → N Reservas** (`@OneToMany` en `Habitacion`, `@ManyToOne` en `Reserva`).
+
+```mermaid
+erDiagram
+    HABITACION ||--o{ RESERVA : tiene
+    HABITACION {
+        Long id PK
+        String numero "único"
+        TipoHabitacion tipo "SENCILLA | DOBLE | SUITE"
+        BigDecimal precioPorNoche
+        boolean disponible
+    }
+    RESERVA {
+        Long id PK
+        String nombreCliente
+        LocalDate fechaEntrada
+        LocalDate fechaSalida
+        Long habitacion_id FK
+    }
+```
+
+### Reglas de negocio
+
+| Regla | Respuesta si no se cumple |
+|---|---|
+| Campos obligatorios, precio > 0, longitudes máximas | `400 Bad Request` con el detalle por campo |
+| `fechaSalida` debe ser posterior a `fechaEntrada` | `400 Bad Request` |
+| El número de habitación no se puede repetir | `409 Conflict` |
+| No se puede reservar una habitación con `disponible = false` | `409 Conflict` |
+| Una habitación no puede tener dos reservas con fechas cruzadas (sí se puede entrar el mismo día que otro cliente sale) | `409 Conflict` |
+| Habitación o reserva inexistente | `404 Not Found` |
+
+Al eliminar una habitación se eliminan también sus reservas (`cascade = ALL, orphanRemoval = true`).
+
+## Endpoints
+
+Base: `http://localhost:8080` (o la URL de Render).
+
+### Habitaciones
+
+| Método | Ruta | Descripción | Respuesta |
+|---|---|---|---|
+| GET | `/api/habitaciones` | Lista todas las habitaciones | 200 |
+| GET | `/api/habitaciones/{id}` | Obtiene una habitación | 200 / 404 |
+| GET | `/api/habitaciones/{id}/reservas` | Lista las reservas de una habitación | 200 / 404 |
+| POST | `/api/habitaciones` | Crea una habitación | 201 / 400 / 409 |
+| PUT | `/api/habitaciones/{id}` | Actualiza una habitación | 200 / 400 / 404 / 409 |
+| DELETE | `/api/habitaciones/{id}` | Elimina una habitación y sus reservas | 204 / 404 |
+
+### Reservas
+
+| Método | Ruta | Descripción | Respuesta |
+|---|---|---|---|
+| GET | `/api/reservas` | Lista todas las reservas | 200 |
+| GET | `/api/reservas/{id}` | Obtiene una reserva | 200 / 404 |
+| POST | `/api/reservas` | Crea una reserva | 201 / 400 / 404 / 409 |
+| PUT | `/api/reservas/{id}` | Actualiza una reserva | 200 / 400 / 404 / 409 |
+| DELETE | `/api/reservas/{id}` | Elimina una reserva | 204 / 404 |
+
+### Ejemplos
+
+**Crear una habitación**
+
+```bash
+curl -X POST http://localhost:8080/api/habitaciones \
+  -H "Content-Type: application/json" \
+  -d '{"numero":"401","tipo":"SUITE","precioPorNoche":420000,"disponible":true}'
+```
+
+```json
+{"id":6,"numero":"401","tipo":"SUITE","precioPorNoche":420000,"disponible":true}
+```
+
+**Actualizar una habitación**
+
+```bash
+curl -X PUT http://localhost:8080/api/habitaciones/6 \
+  -H "Content-Type: application/json" \
+  -d '{"numero":"401","tipo":"SUITE","precioPorNoche":450000,"disponible":true}'
+```
+
+**Crear una reserva**
+
+```bash
+curl -X POST http://localhost:8080/api/reservas \
+  -H "Content-Type: application/json" \
+  -d '{"nombreCliente":"Jhon Garcia","fechaEntrada":"2026-12-01","fechaSalida":"2026-12-04","habitacionId":6}'
+```
+
+La respuesta incluye las noches y el total calculados:
+
+```json
+{
+  "id": 5,
+  "nombreCliente": "Jhon Garcia",
+  "fechaEntrada": "2026-12-01",
+  "fechaSalida": "2026-12-04",
+  "noches": 3,
+  "total": 1350000,
+  "habitacionId": 6,
+  "numeroHabitacion": "401"
+}
+```
+
+**Reservas de una habitación**
+
+```bash
+curl http://localhost:8080/api/habitaciones/1/reservas
+```
+
+**Eliminar**
+
+```bash
+curl -X DELETE http://localhost:8080/api/reservas/5
+curl -X DELETE http://localhost:8080/api/habitaciones/6
+```
+
+### Formato de errores
+
+Todos los errores tienen el mismo formato. Ejemplo de validación (`400`):
+
+```json
+{
+  "timestamp": "2026-10-23T12:12:04.58",
+  "status": 400,
+  "error": "Bad Request",
+  "mensaje": "La petición tiene campos inválidos",
+  "ruta": "/api/habitaciones",
+  "errores": {
+    "numero": "El número es obligatorio",
+    "precioPorNoche": "El precio por noche debe ser mayor que 0"
+  }
+}
+```
+
+Ejemplo de conflicto (`409`):
+
+```json
+{
+  "timestamp": "2026-10-23T12:12:04.67",
+  "status": 409,
+  "error": "Conflict",
+  "mensaje": "La habitación 101 ya tiene una reserva que se cruza con esas fechas",
+  "ruta": "/api/reservas"
+}
+```
+
+## Datos de ejemplo
+
+Al arrancar se cargan desde `src/main/resources/data.sql`:
+
+- 5 habitaciones: `101` (SENCILLA), `102` y `201` (DOBLE), `301` y `302` (SUITE; la `302` no está disponible).
+- 4 reservas repartidas entre las habitaciones `101`, `102` y `301`.
+
+Como la base es en memoria, **los datos vuelven al estado inicial cada vez que se reinicia la aplicación**.
+
+## Cómo correr en local
+
+Requisito: Java 21.
+
+```bash
+# Windows (PowerShell)
+.\mvnw spring-boot:run
+
+# Linux / macOS / Git Bash
+./mvnw spring-boot:run
+```
+
+La API queda en `http://localhost:8080/api/habitaciones`.
+
+Consola de H2 (solo en local): `http://localhost:8080/h2-console`
+
+- JDBC URL: `jdbc:h2:mem:hoteldb`
+- Usuario: `sa` — Contraseña: _(vacía)_
+
+Para correr las pruebas:
+
+```bash
+./mvnw test
+```
+
+## Cómo correr con Docker
+
+El `Dockerfile` es multi-stage: compila con Maven + JDK 21 y ejecuta con un JRE 21 liviano.
+
+```bash
+docker build -t hotel-api .
+docker run -p 8080:8080 hotel-api
+```
+
+Para usar otro puerto, pasa la variable `PORT`:
+
+```bash
+docker run -e PORT=9090 -p 9090:9090 hotel-api
+```
+
+## Despliegue en Render
+
+1. Sube el repositorio a GitHub.
+2. En [Render](https://render.com): **New → Web Service** y selecciona el repositorio.
+3. Render detecta el `Dockerfile` (Language: **Docker**). Elige la instancia **Free** y crea el servicio.
+4. Render asigna la variable `PORT`; la aplicación la usa gracias a `server.port=${PORT:8080}`.
+5. Cada `push` a `main` vuelve a desplegar automáticamente.
