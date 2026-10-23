@@ -2,7 +2,11 @@
 
 API REST para gestionar las **habitaciones** de un hotel y sus **reservas**, hecha con Spring Boot 3 y Java 21.
 
-**Demo en Render:** _pendiente — pega aquí el enlace, por ejemplo `https://hotel-xxxx.onrender.com/api/habitaciones`_
+**Demo en Render:** https://parcial-hotel.onrender.com
+
+- Habitaciones: https://parcial-hotel.onrender.com/api/habitaciones
+- Reservas: https://parcial-hotel.onrender.com/api/reservas
+- Reservas de una habitación: https://parcial-hotel.onrender.com/api/habitaciones/1/reservas
 
 > En el plan gratuito de Render el servicio se duerme tras unos 15 minutos sin uso; la primera petición puede tardar ~50 s.
 
