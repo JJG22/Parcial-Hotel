@@ -2,17 +2,17 @@
 
 - **Despliegue:** https://parcial-hotel.onrender.com
 - **Repositorio:** https://github.com/JJG22/Parcial-Hotel
-- **Fecha de ejecución:** 2026-10-23 17:47:39 (hora de Colombia)
+- **Fecha de ejecución:** 2026-10-23 14:06:11 (hora de Colombia, UTC-5)
 - **Resultado:** 25 de 25 pruebas exitosas
 
-Todas las peticiones se hicieron contra la aplicación desplegada en Render (no en local).
+Todas las peticiones se hicieron contra la aplicación desplegada en Render (no en local). La misma API se puede probar desde la interfaz web (https://parcial-hotel.onrender.com) o desde Swagger (https://parcial-hotel.onrender.com/swagger-ui.html).
 Las pruebas crean una habitación y una reserva temporales y al final las eliminan, así que los datos quedan como estaban.
 
 ## Resumen
 
 | # | Prueba | Petición | Esperado | Obtenido | Resultado |
 |---|---|---|---|---|---|
-| 1 | Bienvenida y lista de rutas | `GET /` | 200 | 200 | ✅ OK |
+| 1 | Bienvenida y lista de rutas | `GET /api` | 200 | 200 | ✅ OK |
 | 2 | Listar habitaciones | `GET /api/habitaciones` | 200 | 200 | ✅ OK |
 | 3 | Obtener habitación por id | `GET /api/habitaciones/2` | 200 | 200 | ✅ OK |
 | 4 | Listar reservas de una habitación | `GET /api/habitaciones/2/reservas` | 200 | 200 | ✅ OK |
@@ -42,8 +42,8 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 
 ### 1. Bienvenida y lista de rutas
 
-- **Petición:** `GET https://parcial-hotel.onrender.com/`
-- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 416 ms
+- **Petición:** `GET https://parcial-hotel.onrender.com/api`
+- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 760 ms
 
 **Respuesta:**
 
@@ -51,6 +51,11 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 {
   "mensaje": "Bienvenido a la API REST del Hotel",
   "estado": "API funcionando",
+  "enlaces": {
+    "interfazWeb": "/",
+    "swagger": "/swagger-ui.html",
+    "openApi": "/v3/api-docs"
+  },
   "endpoints": {
     "habitaciones": {
       "GET /api/habitaciones": "Lista todas las habitaciones",
@@ -74,7 +79,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 2. Listar habitaciones
 
 - **Petición:** `GET https://parcial-hotel.onrender.com/api/habitaciones`
-- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 3031 ms
+- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 418 ms
 
 **Respuesta:**
 
@@ -121,7 +126,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 3. Obtener habitación por id
 
 - **Petición:** `GET https://parcial-hotel.onrender.com/api/habitaciones/2`
-- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 1177 ms
+- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 462 ms
 
 **Respuesta:**
 
@@ -138,7 +143,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 4. Listar reservas de una habitación
 
 - **Petición:** `GET https://parcial-hotel.onrender.com/api/habitaciones/2/reservas`
-- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 790 ms
+- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 771 ms
 
 **Respuesta:**
 
@@ -160,7 +165,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 5. Listar reservas
 
 - **Petición:** `GET https://parcial-hotel.onrender.com/api/reservas`
-- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 683 ms
+- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 471 ms
 
 **Respuesta:**
 
@@ -212,7 +217,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 6. Obtener reserva por id
 
 - **Petición:** `GET https://parcial-hotel.onrender.com/api/reservas/1`
-- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 540 ms
+- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 497 ms
 
 **Respuesta:**
 
@@ -232,7 +237,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 7. Crear habitación
 
 - **Petición:** `POST https://parcial-hotel.onrender.com/api/habitaciones`
-- **Esperado:** 201 — **Obtenido:** 201 — ✅ OK — 2645 ms
+- **Esperado:** 201 — **Obtenido:** 201 — ✅ OK — 2276 ms
 
 **Cuerpo enviado:**
 
@@ -260,7 +265,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 8. Actualizar habitación
 
 - **Petición:** `PUT https://parcial-hotel.onrender.com/api/habitaciones/6`
-- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 684 ms
+- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 653 ms
 
 **Cuerpo enviado:**
 
@@ -288,7 +293,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 9. Crear reserva
 
 - **Petición:** `POST https://parcial-hotel.onrender.com/api/reservas`
-- **Esperado:** 201 — **Obtenido:** 201 — ✅ OK — 1222 ms
+- **Esperado:** 201 — **Obtenido:** 201 — ✅ OK — 1320 ms
 
 **Cuerpo enviado:**
 
@@ -319,7 +324,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 10. Actualizar reserva
 
 - **Petición:** `PUT https://parcial-hotel.onrender.com/api/reservas/5`
-- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 441 ms
+- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 443 ms
 
 **Cuerpo enviado:**
 
@@ -350,7 +355,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 11. Reservas de la habitación creada
 
 - **Petición:** `GET https://parcial-hotel.onrender.com/api/habitaciones/6/reservas`
-- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 423 ms
+- **Esperado:** 200 — **Obtenido:** 200 — ✅ OK — 421 ms
 
 **Respuesta:**
 
@@ -372,7 +377,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 12. Validación: campos obligatorios y precio
 
 - **Petición:** `POST https://parcial-hotel.onrender.com/api/habitaciones`
-- **Esperado:** 400 — **Obtenido:** 400 — ✅ OK — 526 ms
+- **Esperado:** 400 — **Obtenido:** 400 — ✅ OK — 494 ms
 
 **Cuerpo enviado:**
 
@@ -387,16 +392,16 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:43.150604465",
+  "timestamp": "2026-10-23T19:06:11.690381484",
   "status": 400,
   "error": "Bad Request",
   "mensaje": "La petición tiene campos inválidos",
   "ruta": "/api/habitaciones",
   "errores": {
-    "disponible": "El campo disponible es obligatorio",
     "numero": "El número es obligatorio",
-    "tipo": "El tipo es obligatorio (SENCILLA, DOBLE o SUITE)",
-    "precioPorNoche": "El precio por noche debe ser mayor que 0"
+    "disponible": "El campo disponible es obligatorio",
+    "precioPorNoche": "El precio por noche debe ser mayor que 0",
+    "tipo": "El tipo es obligatorio (SENCILLA, DOBLE o SUITE)"
   }
 }
 ```
@@ -404,7 +409,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 13. Validación: salida antes de la entrada
 
 - **Petición:** `POST https://parcial-hotel.onrender.com/api/reservas`
-- **Esperado:** 400 — **Obtenido:** 400 — ✅ OK — 424 ms
+- **Esperado:** 400 — **Obtenido:** 400 — ✅ OK — 429 ms
 
 **Cuerpo enviado:**
 
@@ -421,7 +426,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:43.83834537",
+  "timestamp": "2026-10-23T19:06:12.383769932",
   "status": 400,
   "error": "Bad Request",
   "mensaje": "La petición tiene campos inválidos",
@@ -435,7 +440,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 14. Conflicto: número de habitación repetido
 
 - **Petición:** `POST https://parcial-hotel.onrender.com/api/habitaciones`
-- **Esperado:** 409 — **Obtenido:** 409 — ✅ OK — 400 ms
+- **Esperado:** 409 — **Obtenido:** 409 — ✅ OK — 405 ms
 
 **Cuerpo enviado:**
 
@@ -452,7 +457,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:44.459307473",
+  "timestamp": "2026-10-23T19:06:12.952316444",
   "status": 409,
   "error": "Conflict",
   "mensaje": "Ya existe una habitación con el número 101",
@@ -463,7 +468,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 15. Conflicto: reserva con fechas cruzadas
 
 - **Petición:** `POST https://parcial-hotel.onrender.com/api/reservas`
-- **Esperado:** 409 — **Obtenido:** 409 — ✅ OK — 424 ms
+- **Esperado:** 409 — **Obtenido:** 409 — ✅ OK — 413 ms
 
 **Cuerpo enviado:**
 
@@ -480,7 +485,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:45.043863178",
+  "timestamp": "2026-10-23T19:06:13.535243751",
   "status": 409,
   "error": "Conflict",
   "mensaje": "La habitación 501 ya tiene una reserva que se cruza con esas fechas",
@@ -491,7 +496,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 16. Conflicto: habitación no disponible
 
 - **Petición:** `POST https://parcial-hotel.onrender.com/api/reservas`
-- **Esperado:** 409 — **Obtenido:** 409 — ✅ OK — 427 ms
+- **Esperado:** 409 — **Obtenido:** 409 — ✅ OK — 416 ms
 
 **Cuerpo enviado:**
 
@@ -508,7 +513,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:45.661321325",
+  "timestamp": "2026-10-23T19:06:14.110342585",
   "status": 409,
   "error": "Conflict",
   "mensaje": "La habitación 302 no está disponible",
@@ -519,13 +524,13 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 17. Habitación inexistente
 
 - **Petición:** `GET https://parcial-hotel.onrender.com/api/habitaciones/9999`
-- **Esperado:** 404 — **Obtenido:** 404 — ✅ OK — 442 ms
+- **Esperado:** 404 — **Obtenido:** 404 — ✅ OK — 463 ms
 
 **Respuesta:**
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:46.272955643",
+  "timestamp": "2026-10-23T19:06:14.713223128",
   "status": 404,
   "error": "Not Found",
   "mensaje": "Habitación con id 9999 no encontrada",
@@ -536,13 +541,13 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 18. Reserva inexistente
 
 - **Petición:** `GET https://parcial-hotel.onrender.com/api/reservas/9999`
-- **Esperado:** 404 — **Obtenido:** 404 — ✅ OK — 408 ms
+- **Esperado:** 404 — **Obtenido:** 404 — ✅ OK — 416 ms
 
 **Respuesta:**
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:46.828877156",
+  "timestamp": "2026-10-23T19:06:15.247338775",
   "status": 404,
   "error": "Not Found",
   "mensaje": "Reserva con id 9999 no encontrada",
@@ -553,7 +558,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 19. Reserva con habitación inexistente
 
 - **Petición:** `POST https://parcial-hotel.onrender.com/api/reservas`
-- **Esperado:** 404 — **Obtenido:** 404 — ✅ OK — 429 ms
+- **Esperado:** 404 — **Obtenido:** 404 — ✅ OK — 430 ms
 
 **Cuerpo enviado:**
 
@@ -570,7 +575,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:47.37215193",
+  "timestamp": "2026-10-23T19:06:15.802397292",
   "status": 404,
   "error": "Not Found",
   "mensaje": "Habitación con id 9999 no encontrada",
@@ -581,13 +586,13 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 20. Id no numérico
 
 - **Petición:** `GET https://parcial-hotel.onrender.com/api/habitaciones/abc`
-- **Esperado:** 400 — **Obtenido:** 400 — ✅ OK — 435 ms
+- **Esperado:** 400 — **Obtenido:** 400 — ✅ OK — 412 ms
 
 **Respuesta:**
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:47.964393035",
+  "timestamp": "2026-10-23T19:06:16.396392034",
   "status": 400,
   "error": "Bad Request",
   "mensaje": "El parámetro 'id' tiene un valor inválido: abc",
@@ -598,7 +603,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 21. Fecha con formato inválido
 
 - **Petición:** `POST https://parcial-hotel.onrender.com/api/reservas`
-- **Esperado:** 400 — **Obtenido:** 400 — ✅ OK — 433 ms
+- **Esperado:** 400 — **Obtenido:** 400 — ✅ OK — 427 ms
 
 **Cuerpo enviado:**
 
@@ -615,7 +620,7 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:48.538025013",
+  "timestamp": "2026-10-23T19:06:16.930248055",
   "status": 400,
   "error": "Bad Request",
   "mensaje": "El cuerpo no es un JSON válido o tiene valores con formato incorrecto (fechas yyyy-MM-dd, tipo SENCILLA/DOBLE/SUITE, números sin comillas)",
@@ -626,20 +631,20 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 22. Eliminar reserva
 
 - **Petición:** `DELETE https://parcial-hotel.onrender.com/api/reservas/5`
-- **Esperado:** 204 — **Obtenido:** 204 — ✅ OK — 423 ms
+- **Esperado:** 204 — **Obtenido:** 204 — ✅ OK — 431 ms
 
 **Respuesta:** _(sin contenido)_
 
 ### 23. Comprobar reserva eliminada
 
 - **Petición:** `GET https://parcial-hotel.onrender.com/api/reservas/5`
-- **Esperado:** 404 — **Obtenido:** 404 — ✅ OK — 411 ms
+- **Esperado:** 404 — **Obtenido:** 404 — ✅ OK — 429 ms
 
 **Respuesta:**
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:49.636609247",
+  "timestamp": "2026-10-23T19:06:18.014552418",
   "status": 404,
   "error": "Not Found",
   "mensaje": "Reserva con id 5 no encontrada",
@@ -650,20 +655,20 @@ Las pruebas crean una habitación y una reserva temporales y al final las elimin
 ### 24. Eliminar habitación
 
 - **Petición:** `DELETE https://parcial-hotel.onrender.com/api/habitaciones/6`
-- **Esperado:** 204 — **Obtenido:** 204 — ✅ OK — 406 ms
+- **Esperado:** 204 — **Obtenido:** 204 — ✅ OK — 628 ms
 
 **Respuesta:** _(sin contenido)_
 
 ### 25. Comprobar habitación eliminada
 
 - **Petición:** `GET https://parcial-hotel.onrender.com/api/habitaciones/6`
-- **Esperado:** 404 — **Obtenido:** 404 — ✅ OK — 401 ms
+- **Esperado:** 404 — **Obtenido:** 404 — ✅ OK — 511 ms
 
 **Respuesta:**
 
 ```json
 {
-  "timestamp": "2026-10-23T17:47:50.626392396",
+  "timestamp": "2026-10-23T19:06:19.269574206",
   "status": 404,
   "error": "Not Found",
   "mensaje": "Habitación con id 6 no encontrada",
